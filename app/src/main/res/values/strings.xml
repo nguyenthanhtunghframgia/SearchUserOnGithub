@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">GitUser</string>
+    <string name="asc">Asc</string>
+    <string name="des">Des</string>
 </resources>
