@@ -7,6 +7,9 @@ import com.example.tung.gituser.network.ApiService;
 
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,23 +26,19 @@ public class SearchUserFromApi {
     protected void searchUsers(String user) {
         Retrofit retrofit = ApiClient.getClient();
         ApiService apiService = retrofit.create(ApiService.class);
-        Call<List<User>> call = apiService.searchUser(user);
+        apiService.searchUser(user)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<List<User>>() {
+                    @Override
+                    public void onSuccess(List<User> users) {
+                        mOnFetchDataListener.onSuccess(users);
+                    }
 
-        call.enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response.body() == null) {
-                    mOnFetchDataListener.onDataNotAvailable();
-                } else {
-                    List<User> users = response.body();
-                    mOnFetchDataListener.onSuccess(users);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                mOnFetchDataListener.onError((Exception) t);
-            }
-        });
+                    @Override
+                    public void onError(Throwable e) {
+                        mOnFetchDataListener.onError((Exception) e);
+                    }
+                });
     }
 }

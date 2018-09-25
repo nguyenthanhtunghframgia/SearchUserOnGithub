@@ -1,5 +1,7 @@
 package com.example.tung.gituser.network;
 
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -24,6 +26,7 @@ public class ApiClient {
         sRetrofit = new Retrofit.Builder()
                 .baseUrl(Config.BASE_URL)
                 .client(sOkHttpClient)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }

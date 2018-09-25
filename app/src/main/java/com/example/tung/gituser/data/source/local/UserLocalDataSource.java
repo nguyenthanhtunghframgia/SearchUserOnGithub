@@ -14,6 +14,5 @@ public class UserLocalDataSource implements UserDataSource.LocalDataSource {
         }
         return sInstance;
     }
-
     // TODO: 9/21/2018
 }
